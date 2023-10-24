@@ -1,0 +1,4 @@
+FROM openjdk:8-jre-slim
+ADD https://spc-jar.s3.ap-south-1.amazonaws.com/spring-petclinic.jar /spring-petclinic.jar
+EXPOSE 8080
+CMD ["java", "-jar", "/spring-petclinic.jar"]
