@@ -1,0 +1,10 @@
+FROM ubuntu:18.04 as builder
+RUN apt update
+RUN apt install openjdk-8-jdk wget -y
+RUN wget https://spc-pet.s3.ap-south-1.amazonaws.com/spring-petclinic.jar
+
+FROM gcr.io/distroless/java:8
+COPY --from=builder /spring-petclinic.jar /app/spring-petclinic.jar
+EXPOSE 8080
+ENTRYPOINT ["java"]
+CMD ["-jar", "/app/spring-petclinic.jar"]
