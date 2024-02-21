@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git url: 'https://github.com/Pathuriaws/Docker_Class.git',
+                  branch: 'main'
+            }
+        }
+        stage('Docker_Build') {
+            steps {
+                //sh 'cd $WORKSPACE/examples/$FOLDER_NAME'
+                dir('examples/first-docker-file') {
+                    sh 'docker build -t pathuri/pythonapp:$BUILD_NUMBER .'
+                    sh 'docker image ls'
+                }
+            }
+        }
+        stage('Docker_push_to_dockerhub') {
+            steps {
+             withCredentials([usernamePassword(credentialsId: 'Dockerhub_creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                      sh '''
+                         docker login -u $USER -p $PASS
+                         docker push pathuri/pythonapp:$BUILD_NUMBER
+                         '''
+                    }
+            }
+        }
+    }
+}
